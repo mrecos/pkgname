@@ -8,6 +8,7 @@ COPY . /pkgname
 
 # go into the repo directory
 RUN . /etc/environment \
+RUN Rscript -e "install.packages('raster')"
 
   # Install linux depedendencies here
   # e.g. need this for ggforce::geom_sina
