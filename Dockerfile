@@ -8,6 +8,8 @@ COPY . /pkgname
 
 # go into the repo directory
 RUN . /etc/environment \
+RUN echo "r <- getOption('repos'); r['CRAN'] <- 'http://cran.us.r-project.org'; options(repos = r);" > ~/.Rprofile
+RUN Rscript -e "install.packages('yhatr')"
 
   # Install linux depedendencies here
   # e.g. need this for ggforce::geom_sina
