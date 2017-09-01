@@ -2,7 +2,7 @@
 FROM rocker/verse:3.4.0
 
 # required
-MAINTAINER Matt Harris <your_email@somewhere.com>
+MAINTAINER Matt Harris <mr.ecos@gmail.com>
 
 COPY . /pkgname
 
