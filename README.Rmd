@@ -14,7 +14,7 @@ knitr::opts_chunk$set(
 
 # pkgname
 
-The goal of pkgname is to ... make an rrtools compendium ++
+The goal of pkgname is to ... make an rrtools compendium ++ +
 
 ### Citation
 
