@@ -33,9 +33,62 @@ knitr::opts_chunk$set(
 library(pkgname)
 ```
 
-# Introduction
+# FUNCTIONS
+```{r functions}
+## ----functions-----------------------------------------------------------
+# predict == predicted value from model raster
+# response == site present (1) or site absent (0) at each predicted cell location
+balance_threshold <- function(predict, response) {
+  perf <- ROCR::performance(ROCR::prediction(predict, response), "sens", "spec")
+  auc <- ROCR::performance(ROCR::prediction(predict, response), "auc")
+  auc <- round(auc@y.values[[1]],3)
+  df <- data.frame(Weight = perf@alpha.values[[1]],
+                   Spec = perf@x.values[[1]],
+                   Sens = perf@y.values[[1]],
+                   Back_pcnt = 1 - perf@x.values[[1]],
+                   Xover = abs((perf@y.values[[1]] + (1-perf@x.values[[1]]))-1))
+  df$kg <- 1-((1-df$Spec)/df$Sens)
+  df$reach <- 1-((1-df$Sens)/df$Spec)
+  df$reach <- ifelse(df$reach == 1, 0, df$reach) # removing reach == 1
+  df <- data.frame(apply(df,2,function(x) round(x,3)))
+  # find optimized threshold
+  sens_spec <- df[which.max(df$Sens + df$Spec), "Weight"]
+  xover <- df[which.min(df$Xover), "Weight"]
+  kg <- df[which.max(df$kg), "Weight"]
+  reach <- df[which.max(df[which(df$reach < 1),"reach"]), "Weight"] # max where it is not == 1
+  list(df = df, sens_spec = sens_spec, xover = xover,
+       auc = auc, kg = kg, reach = reach)
+}
+```
+# LIBRARIES
+```{r libraries, message=FALSE, warning=FALSE}
+## ----packages, message=FALSE, warning=FALSE------------------------------
+library("raster")       # for raster manipulation
+library("rgdal")        # for raster processing
+library("dplyr")        # for data processing
+library("mapview")      # for interactive map plots
+library("ggplot2")      # for plotting results
+library("ROCR")         # for model validation functions
+library("RColorBrewer") # for raster color scale
+library("knitr")        # for printing nicer tables
+library("viridis")      # for color scale in ggplot
+```
 
-Here is a citation [@Marwick2017]
+# LOAD DATA
+```{r load_data}
+## ----load_raster_data----------------------------------------------------
+data_loc <- file.path("..","data","raw_data","clip_raster")
+slope <- raster(file.path(data_loc, "slope.tif"))
+ed_h2 <- raster(file.path(data_loc, "ed_h2.tif"))
+ed_h4 <- raster(file.path(data_loc, "ed_h4.tif"))
+sites <- raster(file.path(data_loc, "sites.tif"))
+raster_vars <- stack(slope, ed_h2, ed_h4, sites)
+```
+
+# INIT PLOT
+```{r plot1}
+plot(raster_vars)
+```
 
 # Background
 
