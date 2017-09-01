@@ -10,3 +10,4 @@ LazyData: true
 URL: https://github.com/mrecos/pkgname
 BugReports: https://github.com/mrecos/pkgname/issues
 Imports: bookdown
+RoxygenNote: 6.0.1
