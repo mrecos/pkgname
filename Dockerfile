@@ -15,6 +15,7 @@ RUN . /etc/environment \
   # e.g. need this for ggforce::geom_sina
   && sudo apt-get update \
   && sudo apt-get install libudunits2-dev -y \
+  && sudo apt-get install --yes libudunits2-dev libproj-dev libgeos-dev libgdal-dev \
 
   # build this compendium package
   && R -e "devtools::install('/pkgname', dep=TRUE)" \
